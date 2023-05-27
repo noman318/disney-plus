@@ -24,6 +24,7 @@ const Imageslider = () => {
       <Carousel {...settings}>
         {imagePaths?.map((data, index) => (
           <Wrap key={index}>
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a href="#">
               <img src={data} alt="" />
             </a>
