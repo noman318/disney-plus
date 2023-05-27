@@ -6,12 +6,12 @@ import styled from "styled-components";
 
 const Imageslider = () => {
   let settings = {
-    infinite: true,
     dots: true,
+    infinite: true,
+    speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoScroll: true,
-    speed: 500,
+    autoplay: true,
   };
   const imagePaths = [
     "/images/slider-badag.jpg",
