@@ -28,7 +28,7 @@ const Header = () => {
       }
     });
     // eslint-disable-next-line
-  }, [userName, navigate]);
+  }, [userName]);
   const setUserDetails = (user) => {
     dispatch(
       setUserLoginDetails({
@@ -43,7 +43,7 @@ const Header = () => {
       firebaseAuth
         .signInWithPopup(firebaseAuthProvider)
         .then((res) => {
-          console.log("res", res);
+          // console.log("res", res);
           setUserDetails(res.user);
         })
         .catch((err) => alert(err.message));

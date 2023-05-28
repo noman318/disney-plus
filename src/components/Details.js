@@ -1,20 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import { firebaseDb } from "../firebaseConfig";
 
 const Details = () => {
+  const [detailsData, setDetailsData] = useState({});
+  const { id } = useParams();
+  // console.log("{id}", id);
+
+  useEffect(() => {
+    firebaseDb
+      .collection("movies")
+      .doc(id)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setDetailsData(doc.data());
+        } else {
+          console.log("no such Movie data found");
+        }
+      })
+      .catch((error) => {
+        console.log("Error getting document:", error);
+      });
+  }, [id]);
+  // console.log("detailsData", detailsData);
   return (
     <Container>
       <Background>
-        <img
-          src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/B409C2A425D58C32D822EB633C7CAE3DC910DC2FC62D2B1807A0BB092C531E9A/scale?width=1440&aspectRatio=1.78&format=jpeg"
-          alt="back_img"
-        />
+        <img src={detailsData?.backgroundImg} alt={detailsData?.title} />
       </Background>
       <ImgTitle>
-        <img
-          src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/2041CE26663867FC4EF20377B8625BD629E619452E23BCDB1AB259DD475C2EA1/scale?width=1440&aspectRatio=1.78"
-          alt="movie_name"
-        />
+        <img src={detailsData?.titleImg} alt={detailsData?.title} />
       </ImgTitle>
       <Contentmeta>
         <Controls>
@@ -26,7 +43,18 @@ const Details = () => {
             <img src="/images/play-icon-white.png" alt="trailer_button" />
             <span>Trailer</span>
           </Trailer>
+          <Addlist>
+            <span />
+            <span />
+          </Addlist>
+          <GroupWatch>
+            <div>
+              <img src="/images/group-icon.png" alt="group_icon" />
+            </div>
+          </GroupWatch>
         </Controls>
+        <SubTitles>{detailsData?.subTitle}</SubTitles>
+        <Description>{detailsData?.description}</Description>
       </Contentmeta>
     </Container>
   );
@@ -71,7 +99,7 @@ const ImgTitle = styled.div`
   }
 `;
 const Contentmeta = styled.div`
-  max-width: 874px;
+  max-width: 900px;
 `;
 const Controls = styled.div`
   display: flex;
@@ -117,4 +145,57 @@ const Trailer = styled(Player)`
   border: 1px solid rgb(249, 249, 249);
   color: rgb(249, 249, 249);
 `;
+const Addlist = styled.div`
+  margin-right: 16px;
+  height: 44px;
+  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  border: 2px solid rgb(249, 249, 249);
+  cursor: pointer;
+
+  span {
+    background-color: rgba(249, 249, 249);
+    display: inline-block;
+
+    &:first-child {
+      height: 2px;
+      transform: translate(1px 0px) rotate(0deg);
+      width: 16px;
+    }
+
+    &:nth-child(2) {
+      height: 16px;
+      width: 2px;
+      transform: translate(-8px) rotate(0deg);
+    }
+  }
+`;
+
+const GroupWatch = styled(Addlist)``;
+
+const SubTitles = styled.div`
+  color: rgb(249, 249, 249);
+  font-size: 15px;
+  min-height: 20px;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
+`;
+
+const Description = styled.div`
+  line-height: 1.4;
+  font-size: 26px;
+  padding: 16px 0px;
+  color: rgb(249, 249, 249);
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+`;
+
 export default Details;
